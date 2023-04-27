@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="png-transparent-tic-tac-toe-minimax-tic-tak-to-shot-alcohol-blue-text-trademark-thumbnail.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="WMPLib\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="png-transparent-tic-tac-toe-minimax-tic-tak-to-shot-alcohol-blue-text-trademark-thumbnail.png" />
+  </ItemGroup>
+
+</Project>
