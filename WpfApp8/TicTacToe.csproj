@@ -8,7 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Bells.wav" />
+    <None Remove="Assets\Clock.wav" />
+    <None Remove="Assets\Santa.wav" />
+    <None Remove="christmas poster.png" />
     <None Remove="png-transparent-tic-tac-toe-minimax-tic-tak-to-shot-alcohol-blue-text-trademark-thumbnail.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Bells.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Santa.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Clock.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="christmas poster.png" />
     <Resource Include="png-transparent-tic-tac-toe-minimax-tic-tak-to-shot-alcohol-blue-text-trademark-thumbnail.png" />
   </ItemGroup>
 

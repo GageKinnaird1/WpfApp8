@@ -6,28 +6,35 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System;
 using System.Timers;
-
-
+using System.Diagnostics.Eventing.Reader;
+using System.Transactions;
+using System.Windows.Media;
 namespace TicTacToe
 {
+    
     public partial class MainWindow : Window
     {   //Text creating the gameboard
         private string[,] board = new string[3, 3];
         private string currentPlayer = "🦌";
         private DispatcherTimer timer;
-        private int remainingTime = 5;
+        private int remainingTime = 6;
+        private Page1 menuWindow;
         //private string winner;
-
-        public MainWindow()
+        private MediaPlayer playerT = new MediaPlayer();
+       
+        public MainWindow(Page1 p)
         {
             InitializeComponent();
+            menuWindow = p;
             InitializeBoard();
+            playerT.Open(new Uri($"Assets/Clock.wav", UriKind.Relative));
+            WindowState = WindowState.Maximized;
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
             timer.Start();
         }
-
+        //Goes over the rows and columns of the board and makes sure none are empty
         private void InitializeBoard()
         {
             for (int i = 0; i < 3; i++)
@@ -45,16 +52,16 @@ namespace TicTacToe
             //Sound effects for Santa and Reindeer
             if (currentPlayer == "🎅")
             {
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer();
-                player.SoundLocation = @"C:\Users\22000470CTC\Downloads\onlymp3.to - Santa claus sound effect hohoho happy laughing sounds-VQXAFHU2zM4-256k-1657373952029.wav";
+                MediaPlayer player = new MediaPlayer();
+                player.Open(new Uri($"Assets/Santa.wav", UriKind.Relative));
                 player.Play();
 
             }
 
             if (currentPlayer == "🦌")
             {
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer();
-                player.SoundLocation = @"C:\Users\22000470CTC\Downloads\ES_Jingle Bells 1 - SFX Producer.wav";
+                MediaPlayer player = new MediaPlayer();
+                player.Open(new Uri($"Assets/Bells.wav", UriKind.Relative));
                 player.Play();
             }
 
@@ -73,17 +80,28 @@ namespace TicTacToe
                     MessageBox.Show(currentPlayer + " wins!");
                     ResetBoard();
                 }
-                else if (CheckForTie())
+                //Time for each player
+                if (currentPlayer == "🦌")
+                {
+                    currentPlayer = "🎅";
+                    remainingTime = 5;
+                }
+
+                else if (currentPlayer == "🎅")
+                {
+                    currentPlayer = "🦌";
+                    remainingTime = 5;
+                }
+                //Is it a tie?
+                if (CheckForTie())
                 {
                     MessageBox.Show("Tie game!");
                     ResetBoard();
                 }
-                else
-                {
-                    currentPlayer = currentPlayer == "🦌" ? "🎅" : "🦌";
-                }
+                //MessageBox.Show($"current player = {currentPlayer}");
             }
         }
+        
 
         private bool CheckForWinner()
         {
@@ -134,36 +152,42 @@ namespace TicTacToe
 
             }
         }
+        //Displays Timer and if the other players turn gets skipped
         private void Timer_Tick(object sender, EventArgs e)
         {
+            if(this.Visibility != Visibility.Visible)
+             {
+                return;
+            }
             remainingTime--;
-            if (remainingTime <= 0 && currentPlayer == "🦌")
-            {
-                currentPlayer = "🎅";
-                remainingTime = 5;
-            }
-
-            if (remainingTime <= 0 && currentPlayer == "🎅")
-            {
-                currentPlayer = "🦌";
-                remainingTime = 5;
-            }
             if (remainingTime <= 0)
             {
+                //MessageBox.Show($"current player = {currentPlayer}");
+
+                currentPlayer = currentPlayer == "🎅" ? "🦌" : "🎅";
+                MessageBox.Show("Times up!" +
+                          " Switching Players");
+                       //$"Next Players Turn...{currentPlayer}");
                 remainingTime = 5;
             }
-                if (remainingTime <= 0)
+           
+            if (remainingTime <= 3)
+            {
+                
+                playerT.Play();
+            }
+            if (remainingTime <= 1)
+            {
+              
+                playerT.Stop();
+            }
+
+            if (remainingTime <= 0)
             {
                 timer.Stop();
 
             }
-                if (remainingTime <= 2)
-            {
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer();
-                player.SoundLocation = @"C:\Users\22000470CTC\Downloads\Clock Ticking Sound Effect.wav";
-                player.Play();
 
-            }
             timerTextBlock.Text = $"Time Left On Turn: {remainingTime}";
         }
         //Checks for if no one won and says its a tie
@@ -199,6 +223,15 @@ namespace TicTacToe
             button22.Content = "";
            
             currentPlayer = "🦌";
+        }
+        // When this is clicked it hides the main window going back to the starting screen
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            menuWindow.Show();
+            ResetBoard();
+            remainingTime = 5;
+            this.Hide();
+
         }
     }
 }
